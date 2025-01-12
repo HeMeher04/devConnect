@@ -2,9 +2,9 @@
   "name": "backend_youtube",
   "version": "1.0.0",
   "description": "Youtube Backend Understanding",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon src/app.js"
   },
   "author": "Hemsagar",
   "license": "ISC",
