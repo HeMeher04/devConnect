@@ -1,13 +1,8 @@
 const mongoose =require("mongoose");
 
 const connectDB = async () => {
-    try {
-        const connectionInstance = await mongoose.connect("mongodb+srv://userHem:hemsagar123@hemcluster.ylk9m.mongodb.net/Testing")
-        console.log(`\n MongoDB connected !! DB HOST: ${connectionInstance.connection.host}`);
-    } catch (error) {
-        console.log("MONGODB connection FAILED ", error);
-        process.exit(1)
-    }
+        const connectionInstance = await mongoose.connect("mongodb+srv://userHem:hemsagar123@hemcluster.ylk9m.mongodb.net/devConn")
+        // console.log(`\n MongoDB connected !! DB HOST: ${connectionInstance.connection.host}`);
 }
 
 module.exports = connectDB;
