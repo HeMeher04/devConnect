@@ -34,6 +34,33 @@ app.get("/matchingUser", async(req,res)=>{
     }
 })
 
+//delete by taking ID
+app.delete("/delUser",async(req,res)=>{
+    const uid= req.body.userid;
+    try{
+        const user1 = await User.findByIdAndDelete({_id:uid});
+        console.log(user1);
+        res.send("User deleted");
+    }
+    catch(err){
+        res.send("Error in deleting",err);
+    }
+})
+
+//update user === put / patch
+
+app.patch("/update",async(req,res)=>{
+    const data=req.body;
+    try{
+        const user1= await User.findByIdAndUpdate({_id:data.userid},data);
+        console.log(user1);
+        res.send("user updated");
+    }
+    catch(err){
+        res.send("Error in updating",err);
+    }
+})
+
 
 //find all user in database
 app.get("/feed", async(req,res)=>{
