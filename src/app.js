@@ -12,7 +12,7 @@ app.post("/signup",async(req,res)=>{
         res.send("User Added sucessfully");
     }
     catch(err){
-        res.send("Error",err);
+        res.status(404).send(`Error in signup", ${err}`)
     }
 })
 // get data from database
@@ -52,12 +52,12 @@ app.delete("/delUser",async(req,res)=>{
 app.patch("/update",async(req,res)=>{
     const data=req.body;
     try{
-        const user1= await User.findByIdAndUpdate({_id:data.userid},data);
+        const user1= await User.findByIdAndUpdate({_id:data.userid},data,{runValidators:true});
         console.log(user1);
         res.send("user updated");
     }
     catch(err){
-        res.send("Error in updating",err);
+        res.status(404).send(`Error in Updating", ${err}`);
     }
 })
 
@@ -73,7 +73,7 @@ app.get("/feed", async(req,res)=>{
         res.send(alluser);
     }
     catch(err){
-        res.status(404).send("Error in finding",err)
+        res.status(404).send(`Error in finding", ${err}`)
     }
 })
 
