@@ -2,19 +2,56 @@ const connectDB = require("./config/database.js");
 const express = require("express");
 const app = express();
 const User = require("./models/user.js");
+const bcrypt = require("bcrypt");
+
+const {validateSignUpData} = require("./utils/validation.js")
+
+app.use(express.json()); //express helps to convert json obj to javaScript obj
 
 //Signup taking dynamic data
-app.use(express.json());
 app.post("/signup",async(req,res)=>{
-    const newobj= new User(req.body)
+    
+    const {firstName, lastName, emailId, age, password} = req.body;
     try{
-        await newobj.save();
+        //1. Validate the data
+        validateSignUpData(req);
+        //2. Hash the password
+        const hashPassword = await bcrypt.hash(password,10);
+        //3. Create a new user instance
+        const user = new User({
+            firstName, lastName, emailId,age,
+            password:hashPassword,
+        })
+        //4. save user
+        await user.save();
         res.send("User Added sucessfully");
     }
     catch(err){
-        res.status(404).send(`Error in signup", ${err}`)
+        res.status(404).send(`Error in signUp", ${err}`)
     }
 })
+
+//Login user
+app.post("/login",async(req,res)=>{
+    const {emailId, password} =req.body;
+    try{
+        const user = await User.findOne({emailId:emailId});
+        if(!user){
+            res.send("Please SignUp")
+        }
+        // const hashPassword = await bcrypt.hash(password)
+        const isSame = await bcrypt.compare(password,user.password);
+        if(!isSame){
+            throw new Error("Invalid Password");
+        }
+        res.send("Login Sucessful" +user);
+    }
+    catch(err){
+        res.status(400).send("Error"+err);
+    }
+})
+
+
 // get data from database
 //matching data
 app.get("/matchingUser", async(req,res)=>{
