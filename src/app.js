@@ -1,6 +1,6 @@
-const connectDB = require("./config/database.js");
 const express = require("express");
 const app = express();
+const connectDB = require("./config/database.js");
 const User = require("./models/user.js");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -14,67 +14,15 @@ app.use(express.json()); //express helps to convert json obj to javaScript obj
 
 app.use(cookieParser());// to read cookie
 
-//Signup taking dynamic data
-app.post("/signup", async (req, res) => {
+//Import routers
+const authRouter = require("./routes/auth.js");
+const profileRouter = require("./routes/profile.js");
+const requestRouter = require("./routes/requests.js")
 
-    const { firstName, lastName, emailId, age, password } = req.body;
-    try {
-        //1. Validate the data
-        validateSignUpData(req);
-        //2. Hash the password
-        const hashPassword = await bcrypt.hash(password, 10);
-        //3. Create a new user instance
-        const user = new User({
-            firstName, lastName, emailId, age,
-            password: hashPassword,
-        })
-        //4. save user
-        await user.save();
-        res.send("User Added sucessfully");
-    }
-    catch (err) {
-        res.status(404).send(`Error in signUp", ${err}`)
-    }
-})
-
-//Login user
-app.post("/login", async (req, res) => {
-    try {
-        const { emailId, password } = req.body;
-        const user = await User.findOne({ emailId: emailId });
-        if (!user) {
-            res.send("Please SignUp")
-        }
-        const isSamePassword = await user.validatePassword(password);
-        //add jwt token
-        const token = await user.getJWT();
-        //add token to cookie
-        res.cookie("token", token);
-        // console.log(token);
-        res.send("Login Sucessful" + user);
-    }
-    catch (err) {
-        res.status(400).send("Error" + err);
-    }
-})
-
-// Profile API
-app.get("/profile", userAuth, async(req,res)=>{
-    try{
-        //const user = await User.findById(_id);
-        const user = req.user;//finding user from middleware
-        res.send(user);
-    }
-    catch(err){
-        res.status(400).send("Error in Profile API",err)
-    }
-})
-
-app.post("/sendConnectionRequest",(req,res)=>{
-    console.log("Sending Conn Req");
-    res.send("Connection Request Sent Sucessfully !");
-})
-
+//Use Router as middleware 
+app.use("/", authRouter);
+app.use("/",profileRouter);
+app.use("/",requestRouter);
 
 // get data from database
 //matching data
