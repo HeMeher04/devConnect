@@ -39,18 +39,15 @@ app.post("/signup", async (req, res) => {
 
 //Login user
 app.post("/login", async (req, res) => {
-    const { emailId, password } = req.body;
     try {
+        const { emailId, password } = req.body;
         const user = await User.findOne({ emailId: emailId });
         if (!user) {
             res.send("Please SignUp")
         }
-        const isSame = await bcrypt.compare(password, user.password);
-        if (!isSame) {
-            throw new Error("Invalid Password");
-        }
+        const isSamePassword = await user.validatePassword(password);
         //add jwt token
-        const token = jwt.sign({_id:user._id}, "jk*j7", {expiresIn:'3d'});
+        const token = await user.getJWT();
         //add token to cookie
         res.cookie("token", token);
         // console.log(token);
