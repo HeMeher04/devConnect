@@ -13,6 +13,31 @@ const validateSignUpData = (req)=>{
         throw new Error("Enter a strong Password !")
     }
 }
+
+const validateProfileEditData = (req)=>{
+    try{
+        const user =req.user;
+        const allowedChange=[
+            "firstName",
+            "lastName",
+            "age",
+            "gender",
+            "photoUrl",
+            "about",
+            "skills",
+        ]
+        const newData = req.body;
+        const isEditAllowed = Object.keys(newData).every((field)=>{
+            return allowedChange.includes(field); 
+        })
+        return isEditAllowed;
+    }
+    catch(err){
+        throw new Error("Edit error" + err.message);
+    }
+}
+
 module.exports = {
-    validateSignUpData
+    validateSignUpData,
+    validateProfileEditData
 };
