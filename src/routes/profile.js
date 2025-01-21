@@ -23,7 +23,6 @@ profileRouter.patch("/profile/edit", userAuth , async(req,res)=>{
             throw new Error("This field can't be modified");
         }
         //validate the new data (data sanitization)
-
         const user = req.user; //from userAuth Middleware
         const newData = req.body;
         console.log(user);
@@ -33,7 +32,6 @@ profileRouter.patch("/profile/edit", userAuth , async(req,res)=>{
             }
         )
         await user.save();
-        console.log(user);
         res.send(`${user.firstName} Your data Update Sucessfully`);
     }
     catch(err){

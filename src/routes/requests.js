@@ -5,7 +5,7 @@ const requestRouter = express.Router();
 const {userAuth} = require("../middleware/auth");
 const User = require("../models/user")
 const ConnectionRequest = require("../models/connectionRequest");
-
+//sending Conn
 requestRouter.post("/request/send/:status/:toUserId",userAuth,async(req,res)=>{
     try{
         const fromId = req.user._id;
@@ -48,6 +48,35 @@ requestRouter.post("/request/send/:status/:toUserId",userAuth,async(req,res)=>{
     }
     catch(err){
         res.status(400).send("Error in sending request: "+err);
+    }
+})
+
+//Accept /reject the conn
+requestRouter.post("/request/review/:status/:requestId",userAuth,async(req,res)=>{
+    try{
+        const loggedInUser = req.user;
+        const {status,requestId} = req.params;
+        //status should be accept or reject 
+        const allowedStatus = ["accepted","rejected"];
+        if(!allowedStatus.includes(status)){
+            return res.status(400).send("Not a valid status "+status);
+        }
+        //find conn where toUserId should be loggedin user, fromId should be in database, status should be intrested
+        const conn= await ConnectionRequest.findOne({
+            _id: requestId,
+            toUserId:loggedInUser._id,
+            status:"interested",
+        });
+        if(!conn){
+            return res.status(400).json({message: "Not a valid Connection"});
+        }
+        conn.status = status;
+        const data = await conn.save();
+        res.send("Connection "+ status +" "+ data);
+    }
+    catch(err){
+        res.json({message:"Error in review : ",
+            err})
     }
 })
 
