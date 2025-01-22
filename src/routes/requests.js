@@ -17,7 +17,7 @@ requestRouter.post("/request/send/:status/:toUserId",userAuth,async(req,res)=>{
             return res.status(404).json({message:"User not found"});
         }
         //2. Connection request already exist (A->B) or (B->A)
-        const existingConn = ConnectionRequest.find( { $or : [
+        const existingConn = await ConnectionRequest.find( { $or : [
             {fromUserId:fromId, toUserId:toId} ,
             {fromUserId:toId , toUserId:fromId}
             ]
