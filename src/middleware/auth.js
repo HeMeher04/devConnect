@@ -3,7 +3,6 @@ const User = require("../models/user");
 
 const userAuth = async(req,res,next)=>{
     try{
-        //read token
         const {token} = req.cookies;
         //validate token
         const decodedMessage = jwt.verify(token,"jk*j7");
