@@ -1,7 +1,7 @@
 {
-  "name": "backend_youtube",
+  "name": "devConnect",
   "version": "1.0.0",
-  "description": "Youtube Backend Understanding",
+  "description": "Connect Developer with similar interest",
   "main": "app.js",
   "scripts": {
     "dev": "nodemon src/app.js"
